@@ -1,12 +1,18 @@
 #!ipxe
-###
-### netboot.xyz-custom menu
-###
-
-:start
-echo Hello world!
-sleep 10
-goto custom_exit
-
-:custom_exit
-exit 0
+dhcp
+set serverip http://192.168.1.254 //Modify this to match the ip adress or domain of your webserver
+set pveversion 7.0 //Modify this to match the version you want to install
+set opts "vga=791 video=vesafb:ywrap,mtrr ramdisk_size=16777216 rw quiet initrd=initrd"
+menu Please choose an operating system to boot
+    item normal Install Proxmox
+    item debug Install Proxmox (Debug Mode)
+choose --default normal --timeout 5000 target && goto ${target}
+:debug
+    set kernel "${webserver}/proxmox/${pveversion}/linux26 ${opts} splash=verbose proxdebug"
+    goto init
+:normal
+    set kernel "${webserver}/proxmox/${pveversion}/linux26 ${opts} splash=silent"
+    goto init
+:init
+initrd ${webserver}/proxmox/${pveversion}/initrd
+chain ${kernel}
