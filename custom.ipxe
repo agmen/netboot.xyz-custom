@@ -28,7 +28,7 @@ kernel ${pve_url}/linux26 ${pve_opts} splash=silent ${cmdline}
 goto boot
 
 :boot
-initrd ${pve_url}/initrd.iso.img
+initrd ${pve_url}/initrd
 boot
 
 :live_exit
